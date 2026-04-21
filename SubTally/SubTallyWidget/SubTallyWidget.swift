@@ -53,7 +53,7 @@ struct SubTallyProvider: TimelineProvider {
     }
 
     private func loadEntry() -> SubscriptionEntry {
-        let defaults = UserDefaults(suiteName: AppConstants.groupContainerId)
+        let defaults = UserDefaults(suiteName: "group.com.zzoutuo.SubTally")
         let totalMonthly = defaults?.string(forKey: "widget_totalMonthly") ?? "$0.00"
         let totalYearly = defaults?.string(forKey: "widget_totalYearly") ?? "$0.00"
         let activeCount = defaults?.integer(forKey: "widget_activeCount") ?? 0
@@ -188,7 +188,6 @@ struct MediumWidgetView: View {
     }
 }
 
-@main
 struct SubTallyWidgetBundle: WidgetBundle {
     var body: some Widget {
         SubTallyWidget()

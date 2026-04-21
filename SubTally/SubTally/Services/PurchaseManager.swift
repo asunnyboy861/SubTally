@@ -32,8 +32,8 @@ final class PurchaseManager: ObservableObject {
         }
     }
 
-    func purchase() async -> Bool {
-        guard let product else { return false }
+    func purchase() async -> PurchaseResult {
+        guard let product else { return .failed(PurchaseError.productNotFound) }
 
         isLoading = true
         defer { isLoading = false }
@@ -46,29 +46,31 @@ final class PurchaseManager: ObservableObject {
                 let transaction = try checkVerified(verification)
                 isPro = true
                 await transaction.finish()
-                return true
+                return .success
             case .userCancelled:
-                return false
+                return .cancelled
             case .pending:
-                return false
+                return .pending
             @unknown default:
-                return false
+                return .failed(PurchaseError.unknown)
             }
         } catch {
             errorMessage = error.localizedDescription
-            return false
+            return .failed(error)
         }
     }
 
-    func restorePurchases() async {
+    func restorePurchases() async -> RestoreResult {
         isLoading = true
         defer { isLoading = false }
 
         do {
             try await AppStore.sync()
             await updatePurchaseStatus()
+            return isPro ? .success : .noPurchasesFound
         } catch {
             errorMessage = error.localizedDescription
+            return .failed(error)
         }
     }
 
@@ -118,6 +120,33 @@ final class PurchaseManager: ObservableObject {
     }
 }
 
+enum PurchaseResult {
+    case success
+    case cancelled
+    case pending
+    case failed(Error)
+}
+
+enum RestoreResult {
+    case success
+    case noPurchasesFound
+    case failed(Error)
+}
+
 enum StoreError: Error {
     case failedVerification
+}
+
+enum PurchaseError: Error, LocalizedError {
+    case productNotFound
+    case unknown
+
+    var errorDescription: String? {
+        switch self {
+        case .productNotFound:
+            return "Product not available. Please try again later."
+        case .unknown:
+            return "An unknown error occurred. Please try again."
+        }
+    }
 }

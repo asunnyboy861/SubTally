@@ -4,6 +4,12 @@ import StoreKit
 struct PaywallView: View {
     @ObservedObject var purchaseManager: PurchaseManager
     @Environment(\.dismiss) private var dismiss
+    
+    @State private var showSuccessAlert = false
+    @State private var showRestoreSuccessAlert = false
+    @State private var showNoPurchasesAlert = false
+    @State private var showErrorAlert = false
+    @State private var alertMessage = ""
 
     var body: some View {
         NavigationStack {
@@ -11,7 +17,7 @@ struct PaywallView: View {
                 VStack(spacing: 32) {
                     headerSection
                     featuresSection
-                    purchaseButton
+                    purchaseSection
                     restoreButton
                     termsSection
                 }
@@ -24,6 +30,26 @@ struct PaywallView: View {
                 ToolbarItem(placement: .topBarTrailing) {
                     Button("Close") { dismiss() }
                 }
+            }
+            .alert("Purchase Successful", isPresented: $showSuccessAlert) {
+                Button("OK") { dismiss() }
+            } message: {
+                Text("Thank you for upgrading to SubTally Pro! You now have unlimited access to all features.")
+            }
+            .alert("Purchases Restored", isPresented: $showRestoreSuccessAlert) {
+                Button("OK") { dismiss() }
+            } message: {
+                Text("Your SubTally Pro purchase has been successfully restored.")
+            }
+            .alert("No Purchases Found", isPresented: $showNoPurchasesAlert) {
+                Button("OK", role: .cancel) { }
+            } message: {
+                Text("No previous purchases were found for this Apple ID.")
+            }
+            .alert("Error", isPresented: $showErrorAlert) {
+                Button("OK", role: .cancel) { }
+            } message: {
+                Text(alertMessage)
             }
         }
     }
@@ -57,13 +83,34 @@ struct PaywallView: View {
         .background(Color(.systemBackground))
         .cornerRadius(16)
     }
+    
+    @ViewBuilder
+    private var purchaseSection: some View {
+        if purchaseManager.product == nil {
+            loadingButton
+        } else {
+            purchaseButton
+        }
+    }
+    
+    private var loadingButton: some View {
+        HStack(spacing: 8) {
+            ProgressView()
+                .progressViewStyle(.circular)
+            Text("Loading...")
+                .font(.subheadline)
+        }
+        .foregroundStyle(.secondary)
+        .frame(maxWidth: .infinity)
+        .padding()
+        .background(Color(.systemGray5))
+        .cornerRadius(14)
+    }
 
     private var purchaseButton: some View {
         Button {
             Task {
-                if await purchaseManager.purchase() {
-                    dismiss()
-                }
+                await handlePurchase()
             }
         } label: {
             if purchaseManager.isLoading {
@@ -75,23 +122,13 @@ struct PaywallView: View {
                     .background(Color.accentColor)
                     .cornerRadius(14)
             } else {
-                if let product = purchaseManager.product {
-                    Text("Buy Once — \(product.displayPrice)")
-                        .font(.headline)
-                        .frame(maxWidth: .infinity)
-                        .padding()
-                        .background(Color.accentColor)
-                        .foregroundStyle(.white)
-                        .cornerRadius(14)
-                } else {
-                    Text("Buy Once")
-                        .font(.headline)
-                        .frame(maxWidth: .infinity)
-                        .padding()
-                        .background(Color.accentColor)
-                        .foregroundStyle(.white)
-                        .cornerRadius(14)
-                }
+                Text("Unlock Pro — \(purchaseManager.product?.displayPrice ?? "")")
+                    .font(.headline)
+                    .frame(maxWidth: .infinity)
+                    .padding()
+                    .background(Color.accentColor)
+                    .foregroundStyle(.white)
+                    .cornerRadius(14)
             }
         }
         .disabled(purchaseManager.isLoading)
@@ -100,13 +137,19 @@ struct PaywallView: View {
     private var restoreButton: some View {
         Button {
             Task {
-                await purchaseManager.restorePurchases()
+                await handleRestore()
             }
         } label: {
-            Text("Restore Purchases")
-                .font(.subheadline)
-                .foregroundStyle(.secondary)
+            if purchaseManager.isLoading {
+                ProgressView()
+                    .progressViewStyle(.circular)
+            } else {
+                Text("Restore Purchases")
+                    .font(.subheadline)
+                    .foregroundStyle(.secondary)
+            }
         }
+        .disabled(purchaseManager.isLoading)
     }
 
     private var termsSection: some View {
@@ -120,6 +163,38 @@ struct PaywallView: View {
                 Link("Terms of Use", destination: URL(string: AppConstants.termsOfUseURL)!)
             }
             .font(.caption)
+        }
+    }
+    
+    private func handlePurchase() async {
+        let result = await purchaseManager.purchase()
+        
+        await MainActor.run {
+            switch result {
+            case .success:
+                showSuccessAlert = true
+            case .failed(let error):
+                alertMessage = error.localizedDescription
+                showErrorAlert = true
+            case .cancelled, .pending:
+                break
+            }
+        }
+    }
+    
+    private func handleRestore() async {
+        let result = await purchaseManager.restorePurchases()
+        
+        await MainActor.run {
+            switch result {
+            case .success:
+                showRestoreSuccessAlert = true
+            case .noPurchasesFound:
+                showNoPurchasesAlert = true
+            case .failed(let error):
+                alertMessage = error.localizedDescription
+                showErrorAlert = true
+            }
         }
     }
 }
