@@ -1,0 +1,57 @@
+{
+  "app_name": "SubTally",
+  "bundle_id": "com.zzoutuo.SubTally",
+  "primary_category": "Finance",
+  "secondary_category": "Productivity",
+  "availability": "US",
+  "price": "Free",
+  "in_app_purchases": [
+    {
+      "product_id": "com.zzoutuo.SubTally.pro",
+      "name": "SubTally Pro",
+      "type": "Non-Consumable",
+      "price": "$4.99"
+    }
+  ],
+  "app_store_info": {
+    "name": "SubTally - Subscription Tracker",
+    "subtitle": "Track & Manage Subscriptions",
+    "privacy_policy_url": "https://asunnyboy861.github.io/SubTally-privacy/",
+    "support_url": "https://asunnyboy861.github.io/SubTally-support/",
+    "marketing_url": "https://github.com/asunnyboy861/SubTally",
+    "languages": ["English"],
+    "age_rating": "4+",
+    "contact_email": "iocompile67692@gmail.com",
+    "copyright": "© 2026 SubTally. All rights reserved."
+  },
+  "description": {
+    "primary": "Take control of your subscriptions with SubTally — the privacy-first subscription tracker that keeps your financial data on your device.\n\nNever lose track of a recurring payment again. SubTally helps you monitor all your subscriptions, see upcoming charges at a glance, and cancel unwanted services with step-by-step guides.\n\nKEY FEATURES:\n\n• Track All Subscriptions — Add and manage unlimited subscriptions with custom billing cycles (weekly, monthly, yearly, and more)\n\n• Payment Calendar — See all upcoming charges in a beautiful calendar view so you're never caught off guard\n\n• Smart Analytics — Visualize your spending by category with interactive charts. Know exactly where your money goes\n\n• Cancel Guides — Step-by-step cancellation instructions for 30+ popular services including Netflix, Spotify, Amazon, and more\n\n• Payment Reminders — Get notified before each billing date so you can decide whether to keep or cancel\n\n• Calendar Sync — Add subscription events directly to your iPhone calendar\n\n• CSV Export — Export your subscription data for use in spreadsheets\n\n• Biometric Lock — Protect your data with Face ID or Touch ID\n\n• Privacy First — All data stays on your device. We never collect, transmit, or access your subscription information\n\nFREE VERSION:\n• Track up to 5 subscriptions\n• Basic analytics and reminders\n• Cancel guides for all services\n\nUPGRADE TO PRO:\n• Unlimited subscription tracking\n• Calendar sync\n• Advanced analytics\n• CSV export\n• All future features\n\nOne-time purchase. No recurring fees. Ever.\n\nSubTally is perfect for anyone who wants to:\n- Stop paying for forgotten subscriptions\n- See their total monthly and yearly subscription costs\n- Get reminders before charges hit\n- Cancel services they no longer use\n\nDownload SubTally today and start saving money on subscriptions you forgot about!",
+    "keywords": "subscription,tracker,billing,recurring,payment,manager,cancel,reminder,finance,budget,spending,money,savings"
+  },
+  "whats_new": "Welcome to SubTally v1.0!\n\n• Track all your subscriptions in one place\n• Beautiful calendar view for upcoming payments\n• Smart analytics with category breakdowns\n• Step-by-step cancel guides for 30+ services\n• Payment reminders so you never miss a charge\n• Calendar sync and CSV export (Pro)\n• Biometric lock with Face ID/Touch ID\n• Privacy-first: all data stays on your device",
+  "screenshots_needed": {
+    "iphone_67": {
+      "count": 10,
+      "required": true,
+      "size": "1290x2796",
+      "descriptions": [
+        "Home screen showing monthly total and subscription list",
+        "Subscription detail view with cancel guide button",
+        "Add new subscription form",
+        "Calendar view with upcoming payments",
+        "Analytics view with spending breakdown chart",
+        "Category filter on home screen",
+        "Cancel guide step-by-step instructions",
+        "Settings screen with Pro upgrade",
+        "Paywall/Pro upgrade screen",
+        "Biometric lock screen"
+      ]
+    },
+    "ipad_129": {
+      "count": 10,
+      "required": false,
+      "size": "2048x2732",
+      "descriptions": "Same as iPhone but in iPad resolution"
+    }
+  }
+}
