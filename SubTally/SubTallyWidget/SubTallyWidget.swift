@@ -11,22 +11,6 @@ struct SubscriptionEntry: TimelineEntry {
     let nextPaymentAmount: String?
 }
 
-struct SubTallyWidget: Widget {
-    let kind: String = "SubTallyWidget"
-
-    var body: some WidgetConfiguration {
-        StaticConfiguration(kind: kind, provider: SubTallyProvider()) { entry in
-            SubTallyWidgetEntryView(entry: entry)
-                .containerBackground(for: .widget) {
-                    Color(.systemBackground)
-                }
-        }
-        .configurationDisplayName("SubTally")
-        .description("Track your subscriptions at a glance.")
-        .supportedFamilies([.systemSmall, .systemMedium])
-    }
-}
-
 struct SubTallyProvider: TimelineProvider {
     func placeholder(in context: Context) -> SubscriptionEntry {
         SubscriptionEntry(
@@ -188,6 +172,23 @@ struct MediumWidgetView: View {
     }
 }
 
+struct SubTallyWidget: Widget {
+    let kind: String = "SubTallyWidget"
+
+    var body: some WidgetConfiguration {
+        StaticConfiguration(kind: kind, provider: SubTallyProvider()) { entry in
+            SubTallyWidgetEntryView(entry: entry)
+                .containerBackground(for: .widget) {
+                    Color(.systemBackground)
+                }
+        }
+        .configurationDisplayName("SubTally")
+        .description("Track your subscriptions at a glance.")
+        .supportedFamilies([.systemSmall, .systemMedium])
+    }
+}
+
+@main
 struct SubTallyWidgetBundle: WidgetBundle {
     var body: some Widget {
         SubTallyWidget()
